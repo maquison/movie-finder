@@ -8,7 +8,8 @@ const SearchComponent = (props) => {
                     <p><b>Busque um filme para começar:</b></p>
                     <form action="" onSubmit={props.handleSubmit}>
                         <div className="input-field">
-                            <input placeholder="Pesquise pelo nome do filme..." type="text" onChange={props.handleChange}/>
+                            <i className="material-icons prefix">search</i>
+                            <input className='autocomplete' placeholder="Pesquise pelo nome do filme..." type="text" onChange={props.handleChange}/>
                         </div>
                     </form>
                 </section>
