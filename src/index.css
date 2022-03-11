@@ -19,3 +19,21 @@ code {
   border-bottom: 1px solid purple;
   box-shadow: 0 1px 0 0 #000;
 }
+
+.suggestion {
+  border-bottom: 2px solid purple; 
+  border-left: 2px solid purple;
+  border-right: 2px solid purple;
+  cursor: pointer; 
+  margin-left: 45px
+}
+
+/* label focus color */
+.input-field input:focus + label {
+  color: purple !important;
+}
+/* label underline focus color */
+.row .input-field input:focus {
+  border-bottom: 1px solid purple !important;
+  box-shadow: 0 1px 0 0 purple !important
+}

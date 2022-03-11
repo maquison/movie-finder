@@ -14,7 +14,8 @@ class App extends Component {
       searchMovie: '',
       totalResults: 0,
       currentPage: 1,
-      currentMovie: null
+      currentMovie: null,
+      suggestions: []
     }
     this.apiKey = process.env.REACT_APP_TMDB_API
   }
@@ -25,20 +26,26 @@ class App extends Component {
     fetch(`https://api.themoviedb.org/3/search/movie/?api_key=${this.apiKey}&query=${this.state.searchMovie}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       this.setState({movies: [...data.results], totalResults: data.total_results})
     })
+    this.setState({suggestions: []})
   }
 
   handleChange = (e) => {
     this.setState({searchMovie: e.target.value})
+    if (e.target.value !== '') {
+      fetch(`https://api.themoviedb.org/3/search/movie/?api_key=${this.apiKey}&query=${e.target.value}`)
+      .then((res) => res.json())
+      .then((data) => {
+        this.setState({suggestions: [...data.results]})
+      })
+    }
   }
 
   nextPage = (pageNumber) => {
     fetch(`https://api.themoviedb.org/3/search/movie/?api_key=${this.apiKey}&query=${this.state.searchMovie}&page=${pageNumber}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       this.setState({movies: [...data.results], currentPage: pageNumber})
     })
   }
@@ -53,12 +60,26 @@ class App extends Component {
     this.setState({currentMovie: null})
   }
 
+  selectSuggestion = (id, suggestion) => {
+    this.setState({searchMovie: suggestion})
+    this.setState({suggestions: []})
+    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}`)
+    .then((res) => res.json())
+    .then((data) => {
+      this.setState({movies: [data]})
+    })
+  }
+
   render() {
     const numberPages = Math.floor(this.state.totalResults / 20);
     return (
       <div className="App purple lighten-5">
         <NavComponent />
-        {this.state.currentMovie === null ? <div><HomeComponent /> <SearchComponent handleSubmit={this.handleSubmit} handleChange={this.handleChange}/><ListComponent viewMovieInfo={this.viewMovieInfo} movies={this.state.movies}/></div> : <MovieInfoComponent currentMovie={this.state.currentMovie} closeMovieInfo={this.closeMovieInfo} />}
+        {
+        this.state.currentMovie === null ? <div><HomeComponent /> 
+        <SearchComponent handleSubmit={this.handleSubmit} handleChange={this.handleChange} suggestions={this.state.suggestions} selectSuggestion={this.selectSuggestion} term={this.state.searchMovie}/>
+        <ListComponent viewMovieInfo={this.viewMovieInfo} movies={this.state.movies}/></div> : <MovieInfoComponent currentMovie={this.state.currentMovie} closeMovieInfo={this.closeMovieInfo} />
+        }
         {this.state.totalResults > 20 && this.state.currentMovie === null ? <PaginationComponent pages={numberPages} nextPage={this.nextPage} currentPage={this.state.currentPage}/> : ''}
       </div>
     );
