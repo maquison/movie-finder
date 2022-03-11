@@ -8,7 +8,7 @@ const SearchComponent = (props) => {
                     <p><b>Busque um filme para começar:</b></p>
                     <form action="" onSubmit={props.handleSubmit}>
                         <div className="input-field">
-                            <i className="material-icons prefix">search</i>
+                            <i className="material-icons prefix" style={{color: 'purple'}}>search</i>
                             <input value={props.term} placeholder="Pesquise pelo nome do filme..." type="text" onChange={props.handleChange} />
                             {
                                 props.suggestions && props.suggestions.map((s, i) => {
